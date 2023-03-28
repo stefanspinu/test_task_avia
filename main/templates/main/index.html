@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 4px;
+    }
+
+    .secondary td, .secondary th {
+        font-size: 14px;
+    }
+
+    .collapsible {
+        background-color: #777;
+        color: white;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+    }
+
+    .active, .collapsible:hover {
+        background-color: #555;
+    }
+
+    .content {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: #f1f1f1;
+    }
+
+</style>
+
+<body>
+
+    <form method="GET">
+        <h1>Filter</h1>
+
+        <div style="display: flex;">
+            <div style="margin-right: 20px;">
+                <h3>Tail Number filter</h3>
+                {{ aircrafts_filter.form.tail_number }}
+            </div>
+            <div>
+                <h3>Serial Number filter</h3>
+                {{ aircrafts_filter.form.serial_number }}
+            </div>
+        </div>
+        <button style="margin-top: 20px;">Filter</button>
+    </form>
+
+    <table>
+        <tr>
+          <th>Tail Number</th>
+          <th>Serial Number</th>
+          <th>Aircraft Type Name</th>
+          <th>Year of Production</th>
+          <th>Photos</th>
+        </tr>
+        {% for aircraft in page_obj %}
+        <tr class="collapsible">
+          <td>{{ aircraft.tail_number }}</td>
+          <td>{{ aircraft.serial_number }}</td>
+          <td>{{ aircraft.aircraft_type }}</td>
+          <td>{{ aircraft.year_of_production }}</td>
+          <td>
+            {% if aircraft.images %}
+                {% with aircraft.images|split:"," as imgs %}
+                    {% for img in imgs %}
+                    <div style="display: flex; justify-content:center; align-items: center;">
+                        <img src="{{ img }}" alt="" width="100px" height="100px">
+                    </div>
+                    {% endfor %}
+                {% endwith %}
+            {% endif %}
+          </td>
+          <tr>
+            <td colspan="100%">
+                <ul class="content" style="list-style: none;">
+                  <li><b>Aircraft Class:</b> {{ aircraft.aircraft_class }} </li>
+                  <li><b>Aircompany Name:</b> {{ aircraft.company_name }} </li>
+                  <li><b>Aircompany Phone:</b> {{ aircraft.company_phone }} </li>
+                  <li><b>Aircompany Website:</b> {{ aircraft.company_website }} </li>
+                  <li><b>Airport ICAO:</b> {{ aircraft.ICAO }} </li>
+                  <li><b>Airport IATA:</b> {{ aircraft.IATA }} </li>
+                  <li><b>Airport Name:</b> {{ aircraft.airport_name }} </li>
+                </ul>
+            </td>
+          </tr>
+          
+        </tr>
+        {% endfor %}
+      </table>
+
+      <div>
+        <span>
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          {% endif %}
+  
+          <span class="current">
+            {% for i in page_obj.object_list  %}
+            <a href="?page={{ i.number }}">{{ i.number }}</a>
+            {% endfor %}
+          </span>
+  
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    
+      <script>
+        let coll = document.getElementsByClassName("collapsible");
+        let coll_content = document.getElementsByClassName("content");
+        
+        for (let i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            let content = coll_content[i];
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
+          });
+        }
+        </script>
+</body>
+</html>
