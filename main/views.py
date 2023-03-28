@@ -57,7 +57,7 @@ def get_aircrafts():
 
 
 def home(request):
-    get_aircrafts()
+    # get_aircrafts()
     all_aircrafts = Aircraft.objects.all()
     aircrafts_filter = AircraftFilter(request.GET, queryset=all_aircrafts)
     all_aircrafts = aircrafts_filter.qs
